@@ -1,0 +1,24 @@
+import matplotlib.pyplot as plt
+
+
+def predict(network, input):
+    output = input
+    for layer in network:
+        output = layer.forward(output)
+    return output
+
+ratio = sum([np.argmax(y) == np.argmax(predict(network, x)) for x, y in zip(x_test, y_test)]) / len(x_test)
+error = sum([mse(y, predict(network, x)) for x, y in zip(x_test, y_test)]) / len(x_test)
+print('ratio: %.2f' % ratio)
+print('mse: %.4f' % error)
+
+
+samples = 10
+for test, true in zip(x_test[:samples], y_test[:samples]):
+    image = np.reshape(test, (28, 28))
+    plt.imshow(image, cmap='binary')
+    plt.show()
+    pred = predict(network, test)[0]
+    idx = np.argmax(pred)
+    idx_true = np.argmax(true)
+    print('pred: %s, prob: %.2f, true: %d' % (idx, pred[idx], idx_true))
